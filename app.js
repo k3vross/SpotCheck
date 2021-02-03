@@ -5,9 +5,12 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
+const userRoutes = require('./routes/api/users');
 
 
 const app = express();
+
+app.use('/api/users', userRoutes)
 const db = require("./config/keys").mongoURI;
 const fakeDB = {
   '1': {
@@ -36,6 +39,8 @@ const schema = buildSchema(`
     makeUser(userName: String!, email: String!, name: String!) : User
   }
 `)
+
+
 
 class User {
   constructor (userName, email, name) {
