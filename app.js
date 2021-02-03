@@ -6,44 +6,69 @@ const passport = require('passport');
 const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
 
+
 const app = express();
 const db = require("./config/keys").mongoURI;
-
-const root = {
-  hello: () => {
-    return 'Hello World'
+const fakeDB = {
+  '1': {
+    id: '1',
+    userName: 'kevDOG', 
+    email: 'kevin@spotcheck.com', 
+    name: 'kevin' 
   }
-}
+}; 
 
 const schema = buildSchema(`
   type User {
-    id: ID
+    id: String
     userName: String
     email: String
     name: String
   }
 
   type Query {
-    users: [User]
+    getUser(userId: String!) : User
+    getUsers: [User]
     hello: String
+  }
+
+  type Mutation {
+    makeUser(userName: String!, email: String!, name: String!) : User
   }
 `)
 
-// graphql(
-//   schema,
-//   `
-//     {
-//       users {
-//         userName
-//       }
-//     }
-//   `,
-//   rootValue
-// ).then(
-//   console.log
-// )
+class User {
+  constructor (userName, email, name) {
+    this.userName = userName; 
+    this.email = email; 
+    this.name = name; 
+    this.id = require('crypto').randomBytes(10).toString('hex'); 
+  }
+}
 
+const root = {
+  hello: () => {
+    return 'Hello World'
+  },
 
+  getUser: ({userId}) => {
+    return fakeDB[userId]; 
+  }, 
+
+  getUsers: () => {
+    const users = []; 
+    for (person in fakeDB) {
+      users.push(person)
+    }
+    return users; 
+  }, 
+
+  makeUser: ({userName, email, name}) => {
+    const newPerson = new User(userName, email, name); 
+    fakeDB[newPerson.id] = newPerson
+    return fakeDB[newPerson.id]; 
+  }
+}
 
 app.use('/graphql', 
   graphqlHTTP({
@@ -53,9 +78,6 @@ app.use('/graphql',
   })  
 )
 
-// app.get('/', (req, res) => {
-//   res.send('hello!')
-// })
 
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
