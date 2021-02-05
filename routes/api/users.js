@@ -14,12 +14,15 @@ const validate = [
     .withMessage('Please provide a valid email'),
   check('password')
     .isLength({min: 6})
-    .withMessage('Password must be at least 6 characters')
+    .withMessage('Password must be at least 6 characters'),
+  check('name')
+    .isLength({min: 0})
 ]
+
 
 const generateToken = user => {
   return jwt.sign(
-    {_id: user._id, email: user.email, userName: user.userName, name: user.name}, SECRET123 
+    {_id: user._id, email: user.email, userName: user.userName, name: user.name}, "SECRET123" 
   )
 }
 
@@ -44,17 +47,16 @@ router.post('/signup', validate, async (req, res) => {
   });
 
   try {
-    const savedUser = await user.save();
-    const token = generateToken(user)
-    res.send({success: true, data: {
-      id: savedUser._id,
-      userName: savedUser.userName,
-      email: savedUser.email,
-      name: savedUser.name
-    },
-    token
-  })
-
+      const savedUser = await user.save();
+      const token = generateToken(user)
+      res.send({success: true, data: {
+        id: savedUser._id,
+        userName: savedUser.userName,
+        email: savedUser.email,
+        name: savedUser.name
+      },
+      token
+    })
   } catch (error) {
     res.status(400).send({success: false, error})
   }
