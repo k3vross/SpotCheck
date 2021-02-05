@@ -9,6 +9,7 @@ const userRoutes = require('./routes/api/users');
 
 
 const app = express();
+app.use(express.json())
 
 app.use('/api/users', userRoutes)
 const db = require("./config/keys").mongoURI;
