@@ -4,18 +4,18 @@ import jwt_decode from 'jwt-decode';
 export const RECEIVE_CURRENT_USER = "RECEIVE_CURRENT_USER";
 export const RECEIVE_SESSION_ERRORS = "RECEIVE_SESSION_ERRORS";
 export const RECEIVE_USER_LOGOUT = "RECEIVE_USER_LOGOUT"
-export const RECEIVE_USER_SIGN_IN = "RECEIVE_USER_SIGN_IN";
+export const RECEIVE_USER_SIGN_UP = "RECEIVE_USER_SIGN_UP";
 
-export const receiveCurrentUser = currentUser => {
+export const receiveCurrentUser = payload => {
   return ({
     type: RECEIVE_CURRENT_USER,
-    currentUser
+    payload
   })
 };
 
-export const receiveUserSignIn = () => {
+export const receiveUserSignUp = () => {
   return ({
-    type: RECEIVE_USER_SIGN_IN
+    type: RECEIVE_USER_SIGN_UP
   })
 };
 
@@ -34,7 +34,7 @@ export const receiveUserLogout = () => {
 
 export const signup = user => dispatch => {
   return SessionAPIUtil.signup(user)
-    .then(() => dispatch(receiveUserSignIn()),
+    .then(() => dispatch(receiveUserSignUp()),
     (err) => dispatch(receiveSessionErrors(err.response.data))
     );
 }

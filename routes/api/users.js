@@ -5,7 +5,7 @@ const router = express.Router();
 const {check, validationResult} = require('express-validator');
 const User = require('../../models/User');
 
-const validate = [
+const validateSignUp = [
   check('userName')
     .isLength({min: 3})
     .withMessage('Username is required, must be at least 3 characters'),
@@ -26,7 +26,7 @@ const generateToken = user => {
   )
 }
 
-router.post('/signup', validate, async (req, res) => {
+router.post('/signup', validateSignUp, async (req, res) => {
   const errors = validationResult(req); //takes req data and validates it against validate
 
   if (!errors.isEmpty()) {
@@ -59,6 +59,50 @@ router.post('/signup', validate, async (req, res) => {
     })
   } catch (error) {
     res.status(400).send({success: false, error})
+  }
+})
+
+router.post('/login', [
+  check('password', 'Password is required').exists(), 
+  check('email', 'Must enter a valid email').isEmail()
+], async (req, res) => {
+  const errors = validationResult(req); 
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
+
+  const {email, password} = req.body; 
+  try {
+    const user = await User.findOne({email}); 
+    // if (!user) {
+    //   return res.status(400).json({errors: [{msg: 'Invalid credentials!'}]})
+    // }
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!user || !isMatch) {
+      return res.status(400).json({ errors: [{ msg: 'Invalid credentials!' }] })
+    }
+
+    const payload = {
+      user: {
+        id: user.id, 
+        name: user.name, 
+        email: user.email, 
+        userName: userName
+      }
+    }
+
+    jwt.sign(
+      payload, 
+      "SECRET123", 
+      {expiresIn: 3600}, 
+      (err, token) => {
+        if (err) throw err; 
+        res.json({token, success: true})
+      }
+    )
+  } catch (error) {
+    console.error(error.message); 
+    res.status(400).send({success: false, error}); 
   }
 })
 

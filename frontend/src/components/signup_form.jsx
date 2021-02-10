@@ -12,12 +12,20 @@ const SignUpForm = () => {
 
   const processForm = (e) => {
     e.preventDefault();
+    console.log("anything"); 
     dispatch(sessionActions.signup({
       userName: userName,
       email: email,
       name: name,
       password: password
-    }))
+    })).then((res) => {
+      if (res.type === "RECEIVE_USER_SIGN_UP") {
+        dispatch(sessionActions.login({
+          email: email, 
+          password: password
+        }))
+      }
+    })
   }
 
   return (
@@ -26,9 +34,9 @@ const SignUpForm = () => {
         <input type="text" placeholder="username" value={userName} onChange={({target: { value }}) => setUserName(value)}/>
         <input type="text" placeholder="email" value={email} onChange={({target: { value }}) => setEmail(value)}/>
         <input type="text" placeholder="name" value={name} onChange={({target: { value }}) => setName(value)}/>
-        <input type="text" placeholder="password" value={password} onChange={({target: { value }}) => setPassword(value)}/>
+        <input type="password" placeholder="password" value={password} onChange={({target: { value }}) => setPassword(value)}/>
+        <button type="submit">Sign Up</button>
       </form>
-      <button type="submit">Sign Up</button>
     </div>
   )
 }

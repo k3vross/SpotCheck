@@ -5,7 +5,9 @@ export default function(oldState = {}, action) {
   let newState = Object.assign({}, oldState);
   switch (action.type) {
     case RECEIVE_CURRENT_USER:
-      return {[action.currentUser._id]: action.currentUser};
+      newState[action.payload.user.id] = action.payload.user; 
+      return newState; 
+      // return {[action.payload.user._id]: action.payload.user};
     default:
       return oldState;
   }
