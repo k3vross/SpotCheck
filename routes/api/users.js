@@ -87,7 +87,7 @@ router.post('/login', [
         id: user.id, 
         name: user.name, 
         email: user.email, 
-        userName: userName
+        userName: user.userName
       }
     }
 

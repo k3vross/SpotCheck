@@ -13,76 +13,77 @@ app.use(express.json())
 
 app.use('/api/users', userRoutes)
 const db = require("./config/keys").mongoURI;
-const fakeDB = {
-  '1': {
-    id: '1',
-    userName: 'kevDOG', 
-    email: 'kevin@spotcheck.com', 
-    name: 'kevin' 
-  }
-}; 
 
-const schema = buildSchema(`
-  type User {
-    id: String
-    userName: String
-    email: String
-    name: String
-  }
+// const fakeDB = {
+//   '1': {
+//     id: '1',
+//     userName: 'kevDOG', 
+//     email: 'kevin@spotcheck.com', 
+//     name: 'kevin' 
+//   }
+// }; 
 
-  type Query {
-    getUser(userId: String!) : User
-    getUsers: [User]
-    hello: String
-  }
+// const schema = buildSchema(`
+//   type User {
+//     id: String
+//     userName: String
+//     email: String
+//     name: String
+//   }
 
-  type Mutation {
-    makeUser(userName: String!, email: String!, name: String!) : User
-  }
-`)
+//   type Query {
+//     getUser(userId: String!) : User
+//     getUsers: [User]
+//     hello: String
+//   }
+
+//   type Mutation {
+//     makeUser(userName: String!, email: String!, name: String!) : User
+//   }
+// `)
 
 
 
-class User {
-  constructor (userName, email, name) {
-    this.userName = userName; 
-    this.email = email; 
-    this.name = name; 
-    this.id = require('crypto').randomBytes(10).toString('hex'); 
-  }
-}
+// class User {
+//   constructor (userName, email, name) {
+//     this.userName = userName; 
+//     this.email = email; 
+//     this.name = name; 
+//     this.id = require('crypto').randomBytes(10).toString('hex'); 
+//   }
+// }
 
-const root = {
-  hello: () => {
-    return 'Hello World'
-  },
+// const root = {
+//   hello: () => {
+//     return 'Hello World'
+//   },
 
-  getUser: ({userId}) => {
-    return fakeDB[userId]; 
-  }, 
+//   getUser: ({userId}) => {
+//     return fakeDB[userId]; 
+//   }, 
 
-  getUsers: () => {
-    const users = []; 
-    for (person in fakeDB) {
-      users.push(person)
-    }
-    return users; 
-  }, 
+//   getUsers: () => {
+//     const users = []; 
+//     for (person in fakeDB) {
+//       users.push(person)
+//     }
+//     return users; 
+//   }, 
 
-  makeUser: ({userName, email, name}) => {
-    const newPerson = new User(userName, email, name); 
-    fakeDB[newPerson.id] = newPerson
-    return fakeDB[newPerson.id]; 
-  }
-}
+//   makeUser: ({userName, email, name}) => {
+//     const newPerson = new User(userName, email, name); 
+//     fakeDB[newPerson.id] = newPerson
+//     return fakeDB[newPerson.id]; 
+//   }
+// }
 
-app.use('/graphql', 
-  graphqlHTTP({
-    schema: schema,
-    rootValue: root,
-    graphiql: true
-  })  
-)
+// app.use('/graphql', 
+//   graphqlHTTP({
+//     schema: schema,
+//     rootValue: root,
+//     graphiql: true
+//   })  
+// )
 
 
 mongoose

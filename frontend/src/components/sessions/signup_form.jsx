@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import * as sessionActions from "../actions/session_actions"
+import * as sessionActions from "../../actions/session_actions"
 import { useDispatch } from "react-redux";
 
 const SignUpForm = () => {
@@ -12,7 +12,6 @@ const SignUpForm = () => {
 
   const processForm = (e) => {
     e.preventDefault();
-    console.log("anything"); 
     dispatch(sessionActions.signup({
       userName: userName,
       email: email,
